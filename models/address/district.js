@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
-const City = require("./city");
 
 const District = mongoose.model(
+  "District",
   new mongoose.Schema({
     name: {
       type: String,
-      idCityRef: { type: String, ref: City, require: true },
-      require: true,
+      required: true,
+    },
+    idCityRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "city",
+      required: true,
     },
   })
 );

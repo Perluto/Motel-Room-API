@@ -15,7 +15,7 @@ const ReportSchema = new mongoose.Schema({
   },
   reason: {
     type: String,
-    require: true,
+    required: true,
   },
   isConfirm: {
     type: Boolean,

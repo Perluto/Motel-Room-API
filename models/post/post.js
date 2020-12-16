@@ -22,19 +22,19 @@ const Post = mongoose.model(
     view: {
       type: Number,
       default: 0,
-      require: true,
+      required: true,
     },
     like: {
       type: Number,
-      require: true,
+      required: true,
     },
     postedDate: {
       type: Date,
-      require: true,
+      required: true,
     },
     dueDate: {
       type: Date,
-      require: true,
+      required: true,
     },
   })
 );

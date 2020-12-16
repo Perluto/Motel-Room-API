@@ -1,32 +1,30 @@
 const mongoose = require("mongoose");
-const City = require("./city");
-const District = require("./district");
-const Ward = require("./ward");
 
 const Address = mongoose.model(
+  "Address",
   new mongoose.Schema({
     number: {
       type: String,
-      require: true,
+      required: true,
     },
     road: {
       type: String,
-      require: true,
+      required: true,
     },
     idWardRef: {
-      type: String,
-      ref: Ward,
-      require: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ward",
+      required: true,
     },
     idDistrictRef: {
-      type: String,
-      ref: District,
-      require: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "district",
+      required: true,
     },
     idCityRef: {
-      type: String,
-      ref: City,
-      require: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "city",
+      required: true,
     },
   })
 );

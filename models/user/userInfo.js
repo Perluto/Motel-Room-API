@@ -11,29 +11,29 @@ const UserInfo = mongoose.model(
     },
     name: {
       type: String,
-      require: true,
+      required: true,
     },
     cardId: {
       type: String,
-      require: true,
+      required: true,
     },
     email: {
       type: String,
-      require: true,
+      required: true,
     },
     phone: {
       type: String,
-      require: true,
+      required: true,
     },
     address: {
       type: String,
       ref: Address,
-      require: true,
+      required: true,
     },
     isConfirm: {
       type: Boolean,
       default: false,
-      require: true,
+      required: true,
     },
   })
 );

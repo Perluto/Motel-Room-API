@@ -14,7 +14,7 @@ const Comment = mongoose.model(
     },
     content: {
       type: String,
-      require: true,
+      required: true,
     },
     time: {
       type: Date,

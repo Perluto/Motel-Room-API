@@ -1,0 +1,6 @@
+{
+  "jwtPrivateKey": "unsecureKey",
+  "db": "mongodb://admin:abc123456@easyaccomod-shard-00-00.whe92.mongodb.net:27017,easyaccomod-shard-00-01.whe92.mongodb.net:27017,easyaccomod-shard-00-02.whe92.mongodb.net:27017/EasyAccomd?ssl=true&replicaSet=atlas-8omsao-shard-0&authSource=admin&retryWrites=true&w=majority",
+  "port": "3900",
+  "requiresAuth": true
+}

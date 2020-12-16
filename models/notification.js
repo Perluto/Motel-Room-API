@@ -10,7 +10,7 @@ const UserInfo = mongoose.model(
     },
     content: {
       type: String,
-      ref: User,
+      required: true,
     },
     status: {
       type: Boolean,

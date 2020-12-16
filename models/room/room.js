@@ -9,17 +9,17 @@ const Room = mongoose.model(
     idAddressRef: {
       type: String,
       ref: Address,
-      require: true,
+      required: true,
     },
     idUserRef: {
       type: String,
       ref: User,
-      require: true,
+      required: true,
     },
     idRoomTypeRef: {
       type: String,
       ref: RoomType,
-      require: true,
+      required: true,
     },
     relatedArea: {
       type: String,
@@ -27,17 +27,17 @@ const Room = mongoose.model(
     roomNumber: {
       type: Number,
       min: 1,
-      require: true,
+      required: true,
     },
     price: {
       type: Number,
       min: 0,
-      require: true,
+      required: true,
     },
     area: {
       type: Number,
       min: 0,
-      require: true,
+      required: true,
     },
     idFacilitiesRef: {
       type: String,
@@ -46,16 +46,16 @@ const Room = mongoose.model(
     },
     image: {
       type: String,
-      require: true,
+      required: true,
     },
     isWithOwner: {
       type: Boolean,
-      require: true,
+      required: true,
     },
     status: {
       type: Boolean,
       default: false,
-      require: true,
+      required: true,
     },
   })
 );

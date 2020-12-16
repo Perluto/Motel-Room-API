@@ -4,28 +4,28 @@ const Facilities = mongoose.model(
   new mongoose.Schema({
     bathroom: {
       type: String,
-      require: true,
+      required: true,
     },
     kitchen: {
       type: String,
-      require: true,
+      required: true,
     },
     airCondition: {
       type: Boolean,
-      require: true,
+      required: true,
     },
     balcony: {
       type: Boolean,
-      require: true,
+      required: true,
     },
     electricityPrice: {
       type: Number,
-      require: true,
+      required: true,
       min: 0,
     },
     waterPrice: {
       type: Number,
-      require: true,
+      required: true,
       min: 0,
     },
     other: {

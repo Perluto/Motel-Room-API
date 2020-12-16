@@ -10,11 +10,11 @@ const Role = mongoose.model(
     },
     isAdmin: {
       type: Boolean,
-      require: true,
+      required: true,
     },
     isOwner: {
       type: Boolean,
-      require: true,
+      required: true,
     },
   })
 );
