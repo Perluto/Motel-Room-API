@@ -5,6 +5,7 @@ const User = require("../user/user");
 const Address = require("../address/address");
 
 const Room = mongoose.model(
+  "Room",
   new mongoose.Schema({
     idAddressRef: {
       type: String,

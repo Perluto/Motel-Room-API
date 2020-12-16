@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = require("./user");
 
 const Role = mongoose.model(
+  "Role",
   new mongoose.Schema({
     idUserRef: {
       type: String,

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const Facilities = mongoose.model(
+  "Facilities",
   new mongoose.Schema({
     bathroom: {
       type: String,

@@ -3,6 +3,7 @@ const Address = require("../address/address");
 const User = require("./user");
 
 const UserInfo = mongoose.model(
+  "UserInfo",
   new mongoose.Schema({
     idUserRef: {
       type: String,
