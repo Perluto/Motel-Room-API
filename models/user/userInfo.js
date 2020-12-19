@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
-const Address = require("../address/address");
-const User = require("./user");
+const Joi = require("joi");
 
 const UserInfo = mongoose.model(
   "UserInfo",
   new mongoose.Schema({
     idUserRef: {
-      type: String,
-      ref: User,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
       required: true,
     },
     name: {
@@ -27,8 +26,8 @@ const UserInfo = mongoose.model(
       required: true,
     },
     address: {
-      type: String,
-      ref: Address,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "addresses",
       required: true,
     },
     isConfirm: {
@@ -39,4 +38,19 @@ const UserInfo = mongoose.model(
   })
 );
 
-module.exports = UserInfo;
+function validateUserInfo(user) {
+  const schema = Joi.object({
+    idUserRef: Joi.objectId().required(),
+    name: Joi.string().required(),
+    cardId: Joi.string().length(10).required(),
+    email: Joi.string().email().required(),
+    phone: Joi.string().length(10).required(),
+    address: Joi.objectId().required(),
+    isConfirm: Joi.boolean(),
+  });
+
+  return schema.validate(user);
+}
+
+exports.UserInfo = UserInfo;
+exports.validateUserInfo = validateUserInfo;

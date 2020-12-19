@@ -1,22 +1,24 @@
 const mongoose = require("mongoose");
-const Post = require("../post/post");
-const User = require("../user/user");
+const Joi = require("joi");
 
 const Comment = mongoose.model(
+  "Comment",
   new mongoose.Schema({
     idPostRef: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "posts",
       required: true,
     },
     idUserRef: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
       required: true,
     },
     content: {
       type: String,
       required: true,
     },
-    time: {
+    dateTime: {
       type: Date,
       default: Date.now,
       required: true,
@@ -29,4 +31,16 @@ const Comment = mongoose.model(
   })
 );
 
-module.exports = Comment;
+function validateComment(cmt) {
+  const schema = Joi.object({
+    idUserRef: Joi.objectId().required(),
+    idPostRef: Joi.objectId().required(),
+    content: Joi.string().required(),
+    isConfirm: Joi.boolean(),
+  });
+
+  return schema.validate(cmt);
+}
+
+exports.Comment = Comment;
+exports.validateComment = validateComment;

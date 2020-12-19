@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
-const Room = require("../room/room");
-const User = require("../user/user");
 
 const Post = mongoose.model(
+  "Post",
   new mongoose.Schema({
     idRoomRef: {
-      type: String,
-      ref: Room,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "rooms",
       required: true,
     },
     idUserRef: {
-      type: String,
-      ref: User,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
       required: true,
     },
     isConfirm: {
@@ -39,4 +38,16 @@ const Post = mongoose.model(
   })
 );
 
-module.exports = Post;
+function validatePost(cmt) {
+  const schema = Joi.object({
+    idUserRef: Joi.objectId().required(),
+    idPostRef: Joi.objectId().required(),
+    content: Joi.string().required(),
+    isConfirm: Joi.boolean(),
+  });
+
+  return schema.validate(cmt);
+}
+
+exports.Post = Post;
+exports.validatePost = validatePost;

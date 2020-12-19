@@ -1,25 +1,22 @@
+const Joi = require("joi");
 const mongoose = require("mongoose");
-const RoomType = require("./roomType");
-const Facilities = require("./facilities");
-const User = require("../user/user");
-const Address = require("../address/address");
 
 const Room = mongoose.model(
   "Room",
   new mongoose.Schema({
     idAddressRef: {
-      type: String,
-      ref: Address,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "addresses",
       required: true,
     },
     idUserRef: {
-      type: String,
-      ref: User,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
       required: true,
     },
     idRoomTypeRef: {
-      type: String,
-      ref: RoomType,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "roomtypes",
       required: true,
     },
     relatedArea: {
@@ -41,12 +38,12 @@ const Room = mongoose.model(
       required: true,
     },
     idFacilitiesRef: {
-      type: String,
-      ref: Facilities,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "facilities",
       required: true,
     },
     image: {
-      type: String,
+      type: Array,
       required: true,
     },
     isWithOwner: {
@@ -61,4 +58,22 @@ const Room = mongoose.model(
   })
 );
 
-module.exports = Room;
+function validateRoom(room) {
+  const schema = Joi.object({
+    idAddressRef: Joi.objectId().required(),
+    idUserRef: Joi.objectId().required(),
+    idRoomTypeRef: Joi.objectId().required(),
+    roomNumber: Joi.number().integer().min(1).required(),
+    price: Joi.number().min(0).required(),
+    area: Joi.number().min(10).required(),
+    idFacilitiesRef: Joi.objectId().required(),
+    image: Joi.array().min(3).required(),
+    isWithOwner: Joi.boolean().required(),
+    status: Joi.boolean(),
+  });
+
+  return schema.validate(rom);
+}
+
+exports.Room = Room;
+exports.validateRoom = validateRoom;

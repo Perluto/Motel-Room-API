@@ -1,7 +1,19 @@
 const mongoose = require("mongoose");
 const config = require("config");
+class DB {
+  constructor() {
+    this.url = config.get("db");
+  }
 
-module.exports = function () {
-  const db = config.get("db");
-  mongoose.connect(db).then(() => console.log("Connected"));
-};
+  connect() {
+    mongoose
+      .connect(this.url, { useNewUrlParser: true })
+      .then(() => console.log("Connected!"));
+  }
+
+  disconnect() {
+    mongoose.disconnect().then(() => console.log("Disconnected!"));
+  }
+}
+
+module.exports = DB;

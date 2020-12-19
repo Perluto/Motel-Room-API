@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const Facilities = mongoose.model(
   "Facilities",
@@ -35,4 +36,19 @@ const Facilities = mongoose.model(
   })
 );
 
-module.exports = Facilities;
+function validateFacilities(facilities) {
+  const schema = Joi.object({
+    bathroom: Joi.string().required(),
+    kitchen: Joi.string().required(),
+    airCondition: Joi.boolean().required(),
+    balcony: Joi.boolean().required(),
+    electricityPrice: Joi.number().min(0).required(),
+    waterPrice: Joi.number().min(0).required(),
+    other: Joi.string(),
+  });
+
+  return schema.validate(facilities);
+}
+
+exports.Facilities = Facilities;
+exports.validateFacilities = validateFacilities;

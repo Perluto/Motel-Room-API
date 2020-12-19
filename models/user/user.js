@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const User = mongoose.model(
   "User",
@@ -9,12 +10,30 @@ const User = mongoose.model(
       minlength: 6,
       maxlength: 50,
     },
-
     password: {
       type: String,
+      required: true,
+    },
+    idRoleRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "roles",
       required: true,
     },
   })
 );
 
-module.exports = User;
+function validateUser(user) {
+  const schema = Joi.object({
+    username: Joi.string().min(6).required(),
+    password: Joi.string()
+      .min(6)
+      .pattern(new RegExp("^[a-zA-Z0-9]{6,30}$"))
+      .required(),
+    idRoleRef: Joi.objectId().required(),
+  });
+
+  return schema.validate(user);
+}
+
+exports.User = User;
+exports.validateUser = validateUser;

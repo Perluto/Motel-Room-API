@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
-const User = require("./user/user");
 
 const UserInfo = mongoose.model(
   new mongoose.Schema({
     idUserRef: {
-      type: String,
-      ref: User,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
       required: true,
     },
     content: {

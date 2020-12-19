@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const Address = mongoose.model(
   "Address",
@@ -13,20 +14,33 @@ const Address = mongoose.model(
     },
     idWardRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ward",
+      ref: "wards",
       required: true,
     },
     idDistrictRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "district",
+      ref: "districts",
       required: true,
     },
     idCityRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "city",
+      ref: "cities",
       required: true,
     },
   })
 );
 
-module.exports = Address;
+function validateAddress(address) {
+  const schema = Joi.object({
+    number: Joi.string().required(),
+    road: Joi.string().required(),
+    idWardRef: Joi.objectId().required(),
+    idDistrictRef: Joi.objectId().required(),
+    idCityRef: Joi.objectId().required(),
+  });
+
+  return schema.validate(address);
+}
+
+exports.Address = Address;
+exports.validateAddress = validateAddress;
