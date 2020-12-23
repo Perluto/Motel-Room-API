@@ -1,12 +1,14 @@
 const jwt = require("jsonwebtoken");
+const config = require("config");
 
 function generateAuthToken(user) {
   const token = jwt.sign(
     {
       _id: user._id,
       username: user.username,
-      isOwner: username.isOwner,
-      isAdmin: username.isAdmin,
+      isOwner: user.isOwner,
+      isAdmin: user.isAdmin,
+      idConfirm: user.isConfirm,
     },
     config.get("jwtPrivateKey")
   );

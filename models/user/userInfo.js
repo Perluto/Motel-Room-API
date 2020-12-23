@@ -30,11 +30,6 @@ const UserInfo = mongoose.model(
       ref: "addresses",
       required: true,
     },
-    isConfirm: {
-      type: Boolean,
-      default: false,
-      required: true,
-    },
   })
 );
 
@@ -46,7 +41,6 @@ function validateUserInfo(user) {
     email: Joi.string().email().required(),
     phone: Joi.string().length(10).required(),
     address: Joi.objectId().required(),
-    isConfirm: Joi.boolean(),
   });
 
   return schema.validate(user);

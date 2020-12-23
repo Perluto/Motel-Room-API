@@ -19,6 +19,11 @@ const User = mongoose.model(
       ref: "roles",
       required: true,
     },
+    isConfirm: {
+      type: Boolean,
+      default:false,
+      required: true,
+    },
   })
 );
 
@@ -30,6 +35,7 @@ function validateUser(user) {
       .pattern(new RegExp("^[a-zA-Z0-9]{6,30}$"))
       .required(),
     idRoleRef: Joi.objectId().required(),
+    isConfirm: Joi.boolean(),
   });
 
   return schema.validate(user);
