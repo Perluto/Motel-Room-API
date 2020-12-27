@@ -21,7 +21,7 @@ const User = mongoose.model(
     },
     isConfirm: {
       type: Boolean,
-      default:false,
+      default: false,
       required: true,
     },
   })
@@ -29,11 +29,11 @@ const User = mongoose.model(
 
 function validateUser(user) {
   const schema = Joi.object({
-    username: Joi.string().min(6).required(),
+    username: Joi.string().min(6).required().label("Username"),
     password: Joi.string()
-      .min(6)
       .pattern(new RegExp("^[a-zA-Z0-9]{6,30}$"))
-      .required(),
+      .required()
+      .label("Password"),
     idRoleRef: Joi.objectId().required(),
     isConfirm: Joi.boolean(),
   });

@@ -1,3 +1,4 @@
+const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const Post = mongoose.model(
@@ -18,6 +19,10 @@ const Post = mongoose.model(
       default: false,
       required: true,
     },
+    postName: {
+      type: String,
+      required: true,
+    },
     view: {
       type: Number,
       default: 0,
@@ -25,6 +30,12 @@ const Post = mongoose.model(
     },
     like: {
       type: Number,
+      default: 0,
+      required: true,
+    },
+    follow: {
+      type: Number,
+      default: 0,
       required: true,
     },
     postedDate: {
@@ -38,15 +49,16 @@ const Post = mongoose.model(
   })
 );
 
-function validatePost(cmt) {
+function validatePost(post) {
   const schema = Joi.object({
     idUserRef: Joi.objectId().required(),
-    idPostRef: Joi.objectId().required(),
-    content: Joi.string().required(),
-    isConfirm: Joi.boolean(),
+    idRoomRef: Joi.objectId().required(),
+    postName: Joi.string().required(),
+    postedDate: Joi.string().required(),
+    dueDate: Joi.string().required(),
   });
 
-  return schema.validate(cmt);
+  return schema.validate(post);
 }
 
 exports.Post = Post;

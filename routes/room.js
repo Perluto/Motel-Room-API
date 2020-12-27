@@ -14,34 +14,32 @@ const isOwner = require("../middleware/owner");
 const isAdmin = require("../middleware/admin");
 
 router.get("/room-type", async (req, res) => {
-  db.connect();
   const roomType = await RoomType.find({});
   if (!roomType) return res.status(400).send("Room type invalid");
-  db.disconnect();
   res.send(roomType);
 });
 
 router.get("/facilities/:id", async (req, res) => {
-  db.connect();
   const facilities = await Facilities.findById(req.params.id).select("-__v");
 
   if (!facilities)
     return res
       .status(400)
       .send("The facilities with the given ID was not found.");
-  db.disconnect();
   res.send(facilities);
 });
 
 router.post("/facilities", [auth, isOwner], async (req, res) => {
   const { error } = validateFacilities(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
 
-  db.connect();
   const facilities = new Facilities({
     bathroom: req.body.bathroom,
     kitchen: req.body.kitchen,
     airCondition: req.body.airCondition,
+    waterHeater: req.body.waterHeater,
     balcony: req.body.balcony,
     electricityPrice: req.body.electricityPrice,
     waterPrice: req.body.waterPrice,
@@ -50,17 +48,14 @@ router.post("/facilities", [auth, isOwner], async (req, res) => {
 
   await facilities.save();
 
-  db.disconnect();
   res.send(facilities._id);
 });
 
 router.get("/:id", async (req, res) => {
-  db.connect();
   const room = await Room.findById(req.params.id).select("-__v");
 
   if (!room)
     return res.status(400).send("The room with the given ID was not found.");
-  db.disconnect();
   res.send(room);
 });
 
@@ -68,7 +63,6 @@ router.post("/", [auth, isOwner], async (req, res) => {
   const { error } = validateRoom(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  db.connect();
   const room = new Room({
     idAddressRef: new ObjectId(req.body.idAddressRef),
     idUserRef: new ObjectId(req.body.idUserRef),
@@ -82,8 +76,7 @@ router.post("/", [auth, isOwner], async (req, res) => {
   });
 
   await room.save();
-  db.disconnect();
-  res.send(room);
+  res.send(room._id);
 });
 
 module.exports = router;

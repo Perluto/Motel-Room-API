@@ -72,7 +72,7 @@ function validateRoom(room) {
     status: Joi.boolean(),
   });
 
-  return schema.validate(rom);
+  return schema.validate(room);
 }
 
 exports.Room = Room;

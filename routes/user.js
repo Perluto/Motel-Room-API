@@ -9,13 +9,13 @@ const ObjectId = mongoose.Types.ObjectId;
 const { User, validateUser } = require("../models/user/user");
 const Role = require("../models/user/role");
 const { UserInfo, validateUserInfo } = require("../models/user/userInfo");
+const { Address, validateAddress } = require("../models/address/address");
 
 const auth = require("../middleware/auth");
 const isOwner = require("../middleware/owner");
 const isAdmin = require("../middleware/admin");
 
 router.get("/owner", [auth, isAdmin], async (req, res) => {
-  db.connect();
   const role = await Role.findOne({ isOwner: true, isAdmin: false });
 
   if (!role) return res.status(404).send("Error");
@@ -24,14 +24,10 @@ router.get("/owner", [auth, isAdmin], async (req, res) => {
     "-password -idRoleRef"
   );
 
-  db.disconnect();
-
   res.send(users);
 });
 
 router.get("/owner/:id", [auth, isOwner], async (req, res) => {
-  db.connect();
-
   const user = await User.findById(req.params.id).select(
     "-password -idRoleRef"
   );
@@ -42,14 +38,11 @@ router.get("/owner/:id", [auth, isOwner], async (req, res) => {
   });
 
   if (!userInfo) res.status(400).send("Invalid id.");
-  db.disconnect();
 
   res.send(userInfo);
 });
 
 router.post("/", async (req, res) => {
-  db.connect();
-
   let user = await User.findOne({ username: req.body.username });
   if (user) return res.status(400).send("User already registered.");
 
@@ -74,7 +67,6 @@ router.post("/", async (req, res) => {
   });
 
   if (error) {
-    db.disconnect();
     return res.status(400).send(error.details[0].message);
   }
 
@@ -93,14 +85,22 @@ router.post("/", async (req, res) => {
   } else {
     user
       .save()
-      .then((result) => {
+      .then(async (result) => {
+        const address = new Address({
+          number: req.body.number,
+          street: req.body.street,
+          idCityRef: new ObjectId(req.body.idCityRef),
+          idDistrictRef: new ObjectId(req.body.idDistrictRef),
+          idWardRef: new ObjectId(req.body.idWardRef),
+        });
+        await address.save();
+
         const { error } = validateUserInfo({
           idUserRef: result._id.toString(),
           name: req.body.name,
           cardId: req.body.cardId,
-          email: req.body.email,
           phone: req.body.phone,
-          address: req.body.address,
+          address: address._id.toString(),
         });
 
         if (error) return res.status(400).send(error.details[0].message);
@@ -109,14 +109,12 @@ router.post("/", async (req, res) => {
           idUserRef: new ObjectId(result._id),
           name: req.body.name,
           cardId: req.body.cardId,
-          email: req.body.email,
           phone: req.body.phone,
-          address: req.body.address,
+          address: new ObjectId(address._id),
         });
         return userInfo.save();
       })
       .then((result) => {
-        db.disconnect();
         res.send("Done");
       })
       .catch((err) => {
@@ -126,8 +124,6 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id/status", [auth, isAdmin], async (req, res) => {
-  db.connect();
-
   const user = await User.findOne({ _id: new ObjectId(req.params.id) });
   if (!user) return res.status(400).send("Invalid id.");
 
@@ -140,13 +136,10 @@ router.put("/:id/status", [auth, isAdmin], async (req, res) => {
   if (!newUser)
     return res.status(404).send("The user with the given ID was not found.");
 
-  db.disconnect();
   res.send("Done");
 });
 
 router.put("/:id/change-password", [auth, isAdmin], async (req, res) => {
-  db.connect();
-
   const user = await User.findOne({ _id: new ObjectId(req.params.id) }).select(
     "password"
   );
@@ -163,7 +156,6 @@ router.put("/:id/change-password", [auth, isAdmin], async (req, res) => {
   if (!newUser)
     return res.status(404).send("The user with the given ID was not found.");
 
-  db.disconnect();
   res.send("Done");
 });
 
@@ -172,8 +164,6 @@ router.put("/owner/:idUser/profile", [auth, isOwner], async (req, res) => {
   data.idUserRef = req.params.idUser;
   const { error } = validateUserInfo(data);
   if (error) return res.status(400).send(error.details[0].message);
-
-  db.connect();
   const userInfo = await UserInfo.find({
     inUserRef: new ObjectId(req.params.idUser),
   });
@@ -194,7 +184,6 @@ router.put("/owner/:idUser/profile", [auth, isOwner], async (req, res) => {
   if (!newUser)
     return res.status(404).send("The report with the given ID was not found.");
 
-  db.disconnect();
   res.send(newUser);
 });
 

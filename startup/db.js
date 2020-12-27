@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
 const config = require("config");
+const mongooseOpts = {
+  useNewUrlParser: true,
+  autoReconnect: true,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 1000,
+  poolSize: 10,
+};
 class DB {
   constructor() {
     this.url = config.get("db");
@@ -7,7 +14,7 @@ class DB {
 
   connect() {
     mongoose
-      .connect(this.url, { useNewUrlParser: true })
+      .connect(this.url, mongooseOpts)
       .then(() => console.log("Connected!"));
   }
 

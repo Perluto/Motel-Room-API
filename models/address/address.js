@@ -8,7 +8,7 @@ const Address = mongoose.model(
       type: String,
       required: true,
     },
-    road: {
+    street: {
       type: String,
       required: true,
     },
@@ -33,7 +33,7 @@ const Address = mongoose.model(
 function validateAddress(address) {
   const schema = Joi.object({
     number: Joi.string().required(),
-    road: Joi.string().required(),
+    street: Joi.string().required(),
     idWardRef: Joi.objectId().required(),
     idDistrictRef: Joi.objectId().required(),
     idCityRef: Joi.objectId().required(),

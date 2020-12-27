@@ -6,7 +6,7 @@ const Ward = mongoose.model(
     name: { type: String, required: true },
     idDistrictRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "district",
+      ref: "districts",
       required: true,
     },
   })

@@ -6,19 +6,21 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const { generateAuthToken } = require("../middleware/generateAuthToken");
-const DB = require("../startup/db");
-const db = new DB();
+
 const ObjectId = mongoose.Types.ObjectId;
 
 router.post("/", async (req, res) => {
   const { error } = validateAuth(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  db.connect();
   const user = await User.findOne({ username: req.body.username });
-  if (!user) return res.status(400).send("Invalid email or password.");
+  if (!user) {
+    return res.status(400).send("Invalid username or password.");
+  }
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send("Invalid email or password.");
+  if (!validPassword) {
+    return res.status(400).send("Invalid username or password.");
+  }
 
   const role = await Role.findById({ _id: new ObjectId(user.idRoleRef) });
 
@@ -29,7 +31,6 @@ router.post("/", async (req, res) => {
     isOwner: role.isOwner,
     idsConfirm: user.idsConfirm,
   });
-  db.disconnect()
   res.send(token);
 });
 

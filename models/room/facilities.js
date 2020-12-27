@@ -20,6 +20,10 @@ const Facilities = mongoose.model(
       type: Boolean,
       required: true,
     },
+    waterHeater: {
+      type: Boolean,
+      required: true,
+    },
     electricityPrice: {
       type: Number,
       required: true,
@@ -44,6 +48,7 @@ function validateFacilities(facilities) {
     balcony: Joi.boolean().required(),
     electricityPrice: Joi.number().min(0).required(),
     waterPrice: Joi.number().min(0).required(),
+    waterHeater: Joi.boolean().required().label("Bình nóng lạnh"),
     other: Joi.string(),
   });
 

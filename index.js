@@ -8,6 +8,9 @@ const post = require("./routes/post");
 const user = require("./routes/user");
 const auth = require("./routes/auth");
 const Joi = require("joi");
+const DB = require("./startup/db");
+const db = new DB();
+db.connect();
 
 Joi.objectId = require("joi-objectid")(Joi);
 
