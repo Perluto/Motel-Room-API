@@ -8,9 +8,6 @@ const post = require("./routes/post");
 const user = require("./routes/user");
 const auth = require("./routes/auth");
 const Joi = require("joi");
-const DB = require("./startup/db");
-const db = new DB();
-db.connect();
 
 Joi.objectId = require("joi-objectid")(Joi);
 
@@ -23,6 +20,7 @@ app.use("/api/room", room);
 app.use("/api/post", post);
 app.use("/api/user", user);
 app.use("/api/auth", auth);
+require("./startup/db")();
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

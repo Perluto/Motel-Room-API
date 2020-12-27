@@ -6,8 +6,6 @@ const { Room, validateRoom } = require("../models/room/room");
 const { Facilities, validateFacilities } = require("../models/room/facilities");
 const { Address } = require("../models/address/address");
 const ObjectId = mongoose.Types.ObjectId;
-const DB = require("../startup/db");
-const db = new DB();
 
 const auth = require("../middleware/auth");
 const isOwner = require("../middleware/owner");

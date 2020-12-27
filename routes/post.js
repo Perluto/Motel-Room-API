@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const DB = require("../startup/db");
-const db = new DB();
 const Joi = require("joi");
 const ObjectId = mongoose.Types.ObjectId;
 const { Post, validatePost } = require("../models/post/post");
@@ -16,10 +14,8 @@ const { Report, validateReport } = require("../models/post/report");
 const auth = require("../middleware/auth");
 const isOwner = require("../middleware/owner");
 const isAdmin = require("../middleware/admin");
-const { boolean } = require("joi");
 
-router.get("/all", [auth, isAdmin], (req, res) => {
-  db.connect();
+router.get("/all", [auth], (req, res) => {
   Post.find({})
     .select("-__v")
     .then((result) => {
@@ -33,7 +29,6 @@ router.get("/all", [auth, isAdmin], (req, res) => {
 });
 
 router.get("/owner/:idOwnerRef", [auth, isOwner], (req, res) => {
-  db.connect();
   Post.find({ idOwnerRef: new ObjectId(req.params.idOwnerRef) })
     .select("-__v")
     .then((result) => {
@@ -271,10 +266,6 @@ router.put("/:idPost/comment/:idCmt", [auth, isAdmin], async (req, res) => {
 
   res.send(newCmt);
 });
-
-/*
-router.get("/:idPost/report/:idRep", async (req, res) => {});
-*/
 
 router.get("/:idPost/report", [auth, isAdmin], async (req, res) => {
   const post = await Post.findById(req.params.idPost);

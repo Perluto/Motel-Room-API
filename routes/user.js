@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const DB = require("../startup/db");
-const db = new DB();
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
