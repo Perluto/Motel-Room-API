@@ -6,12 +6,12 @@ const Report = mongoose.model(
   new mongoose.Schema({
     idUserRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "User",
       required: true,
     },
     idPostRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "posts",
+      ref: "Post",
       required: true,
     },
     reason: {

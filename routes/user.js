@@ -31,7 +31,7 @@ router.get("/owner/:id", [auth, isOwner], async (req, res) => {
   );
   if (!user) res.status(400).send("Invalid id.");
 
-  const userInfo = await UserInfo.find({
+  const userInfo = await UserInfo.findOne({
     idUserRef: new ObjectId(req.params.id),
   });
 

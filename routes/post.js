@@ -17,6 +17,21 @@ const isAdmin = require("../middleware/admin");
 
 router.get("/all", [auth], (req, res) => {
   Post.find({})
+    .populate("idRoomRef")
+    .select("-__v")
+    .then((result) => {
+      if (!result)
+        return res
+          .status(400)
+          .send("The post with the given ID was not found.");
+
+      res.send(result);
+    });
+});
+
+router.get("/all/confirmed", [auth], (req, res) => {
+  Post.find({ isConfirm: true })
+    .populate("idRoomRef")
     .select("-__v")
     .then((result) => {
       if (!result)
@@ -29,7 +44,8 @@ router.get("/all", [auth], (req, res) => {
 });
 
 router.get("/owner/:idOwnerRef", [auth, isOwner], (req, res) => {
-  Post.find({ idOwnerRef: new ObjectId(req.params.idOwnerRef) })
+  Post.find({ idUserRef: new ObjectId(req.params.idOwnerRef) })
+    .populate("idRoomRef")
     .select("-__v")
     .then((result) => {
       if (!result)
@@ -42,7 +58,9 @@ router.get("/owner/:idOwnerRef", [auth, isOwner], (req, res) => {
 });
 
 router.get("/:id", [auth, isOwner], async (req, res) => {
-  const post = await Post.findById(req.params.id).select("-__v");
+  const post = await Post.findById(req.params.id)
+    .populate("idRoomRef")
+    .select("-__v");
 
   if (!post)
     return res.status(400).send("The address with the given ID was not found.");
@@ -66,7 +84,7 @@ router.post("/", [auth, isOwner], async (req, res) => {
     idRoomRef: new ObjectId(data.idRoomRef),
     idUserRef: new ObjectId(data.idUserRef),
     postName: data.postName,
-    isConfirm: false,
+    isConfirm: req.body.user.isAdmin,
     postedDate: data.postedDate,
     dueDate: data.dueDate,
   });
@@ -82,20 +100,20 @@ router.post("/", [auth, isOwner], async (req, res) => {
     });
 });
 
-router.put("/:id", [auth, isOwner], async (req, res) => {
+router.put("/:id", [auth, isAdmin], async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(400).send("Invalid id.");
 
   const newPost = await Post.findByIdAndUpdate(
     req.params.id,
-    { status: req.body.status },
+    { idConfirm: req.body.idConfirm },
     { new: true }
   );
 
   if (!newPost)
     return res.status(404).send("The post with the given ID was not found.");
 
-  res.send(newPost);
+  res.send(newPost._id);
 });
 
 router.put("/:id/view", [auth], async (req, res) => {

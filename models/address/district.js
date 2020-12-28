@@ -9,7 +9,7 @@ const District = mongoose.model(
     },
     idCityRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "city",
+      ref: "City",
       required: true,
     },
   })

@@ -6,7 +6,7 @@ const UserInfo = mongoose.model(
   new mongoose.Schema({
     idUserRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "User",
       required: true,
     },
     name: {
@@ -23,7 +23,7 @@ const UserInfo = mongoose.model(
     },
     address: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "addresses",
+      ref: "Address",
       required: true,
     },
   })

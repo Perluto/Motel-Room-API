@@ -16,7 +16,7 @@ const User = mongoose.model(
     },
     idRoleRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "roles",
+      ref: "Role",
       required: true,
     },
     isConfirm: {

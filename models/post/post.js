@@ -6,12 +6,12 @@ const Post = mongoose.model(
   new mongoose.Schema({
     idRoomRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "rooms",
+      ref: "Room",
       required: true,
     },
     idUserRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "User",
       required: true,
     },
     isConfirm: {

@@ -14,17 +14,17 @@ const Address = mongoose.model(
     },
     idWardRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "wards",
+      ref: "Ward",
       required: true,
     },
     idDistrictRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "districts",
+      ref: "District",
       required: true,
     },
     idCityRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "cities",
+      ref: "City",
       required: true,
     },
   })

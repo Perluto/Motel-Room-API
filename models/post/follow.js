@@ -6,12 +6,12 @@ const Follow = mongoose.model(
   new mongoose.Schema({
     idPostRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "posts",
+      ref: "Post",
       required: true,
     },
     idUserRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "User",
       required: true,
     },
   })

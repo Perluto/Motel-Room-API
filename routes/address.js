@@ -63,28 +63,13 @@ router.get("/ward/:id", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const address = await Address.findById(req.params.id).select("-__v");
+  const address = await Address.findById(req.params.id)
+    .populate("idCityRef idDistrictRef idWardRef", "name -_id")
+    .select("-__v");
   if (!address) {
     return res.status(400).send("The address with the given ID was not found.");
   }
-
-  const addressInfo = {
-    number: address.number,
-    street: address.street,
-  };
-
-  const city = await City.findById(address.idCityRef).select("-_id -__v");
-  const district = await District.findById(address.idDistrictRef).select(
-    "-_id -idCityRef -__v"
-  );
-  const ward = await Ward.findById(address.idWardRef).select(
-    "-_id -idDistrictRef -__v"
-  );
-  addressInfo.city = city.name;
-  addressInfo.district = district.name;
-  addressInfo.ward = ward.name;
-
-  res.status(200).send(addressInfo);
+  res.status(200).send(address);
 });
 
 router.post("/", auth, async (req, res) => {

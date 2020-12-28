@@ -17,6 +17,12 @@ router.get("/room-type", async (req, res) => {
   res.send(roomType);
 });
 
+router.get("/room-type/:id", async (req, res) => {
+  const roomType = await RoomType.findById(req.params.id);
+  if (!roomType) return res.status(400).send("Room type invalid");
+  res.send(roomType);
+});
+
 router.get("/facilities/:id", async (req, res) => {
   const facilities = await Facilities.findById(req.params.id).select("-__v");
 
@@ -50,7 +56,17 @@ router.post("/facilities", [auth, isOwner], async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const room = await Room.findById(req.params.id).select("-__v");
+  const room = await (await Room.findById(req.params.id)).select("-__v");
+
+  if (!room)
+    return res.status(400).send("The room with the given ID was not found.");
+  res.send(room);
+});
+
+router.get("/owner/:id", async (req, res) => {
+  const room = await Room.find({
+    idUserRef: new ObjectId(req.params.id),
+  }).select("status");
 
   if (!room)
     return res.status(400).send("The room with the given ID was not found.");
@@ -75,6 +91,22 @@ router.post("/", [auth, isOwner], async (req, res) => {
 
   await room.save();
   res.send(room._id);
+});
+
+router.put("/:id", [auth, isOwner], async (req, res) => {
+  const room = await Room.findById(req.params.id);
+  if (!room) return res.status(400).send("Invalid id.");
+
+  const newRoom = await Room.findByIdAndUpdate(
+    req.params.id,
+    { status: req.body.status },
+    { new: true }
+  );
+
+  if (!newRoom)
+    return res.status(404).send("The post with the given ID was not found.");
+
+  res.send(newRoom._id);
 });
 
 module.exports = router;
