@@ -67,7 +67,7 @@ function validateRoom(room) {
     price: Joi.number().min(0).required(),
     area: Joi.number().min(10).required(),
     idFacilitiesRef: Joi.objectId().required(),
-    image: Joi.array().min(3).required(),
+    image: Joi.array().min(1).required(),
     isWithOwner: Joi.boolean().required(),
     status: Joi.boolean(),
   });

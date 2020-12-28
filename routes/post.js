@@ -77,14 +77,14 @@ router.post("/", [auth, isOwner], async (req, res) => {
   const room = await Room.findById(data.idRoomRef);
   if (!room) return res.status(400).send("Invalid ID");
 
-  const user = await User.findById(data.idUserRef);
+  const user = await User.findById(data.idUserRef).populate("idRoleRef");
   if (!user) return res.status(400).send("Invalid ID");
 
   const post = new Post({
     idRoomRef: new ObjectId(data.idRoomRef),
     idUserRef: new ObjectId(data.idUserRef),
     postName: data.postName,
-    isConfirm: req.body.user.isAdmin,
+    isConfirm: user.idRoleRef.isAdmin,
     postedDate: data.postedDate,
     dueDate: data.dueDate,
   });
@@ -92,11 +92,10 @@ router.post("/", [auth, isOwner], async (req, res) => {
   post
     .save()
     .then(() => {
-      db.disconnect();
       res.status(200).send("Done");
     })
-    .catch(() => {
-      res.status(501).send("Failed");
+    .catch((err) => {
+      res.status(501).send(err);
     });
 });
 
@@ -106,7 +105,7 @@ router.put("/:id", [auth, isAdmin], async (req, res) => {
 
   const newPost = await Post.findByIdAndUpdate(
     req.params.id,
-    { idConfirm: req.body.idConfirm },
+    { isConfirm: true },
     { new: true }
   );
 

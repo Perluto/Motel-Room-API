@@ -5,8 +5,8 @@ module.exports = function (req, res, next) {
   // 403 Forbidden
   //if (!config.get("requiresAuth")) return next();
 
-  if (!req.user.isOwner && !req.user.isConfirm)
+  if (!req.user.isOwner && !req.user.isConfirm) {
     return res.status(403).send("Access denied.");
-
+  }
   next();
 };
