@@ -8,7 +8,7 @@ function generateAuthToken(user) {
       username: user.username,
       isOwner: user.isOwner,
       isAdmin: user.isAdmin,
-      idConfirm: user.isConfirm,
+      isConfirm: user.isConfirm,
     },
     config.get("jwtPrivateKey")
   );

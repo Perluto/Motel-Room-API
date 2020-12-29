@@ -36,6 +36,7 @@ function validateComment(cmt) {
     idUserRef: Joi.objectId().required(),
     idPostRef: Joi.objectId().required(),
     content: Joi.string().required(),
+    dateTime: Joi.string().required(),
     isConfirm: Joi.boolean(),
   });
 

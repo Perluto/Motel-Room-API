@@ -29,8 +29,9 @@ router.post("/", async (req, res) => {
     username: user.username,
     isAdmin: role.isAdmin,
     isOwner: role.isOwner,
-    idsConfirm: user.idsConfirm,
+    isConfirm: user.isConfirm,
   });
+
   res.send(token);
 });
 

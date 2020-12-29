@@ -115,6 +115,22 @@ router.put("/:id", [auth, isAdmin], async (req, res) => {
   res.send(newPost._id);
 });
 
+router.put("/:id/extend", [auth, isOwner], async (req, res) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(400).send("Invalid id.");
+
+  const newPost = await Post.findByIdAndUpdate(
+    req.params.id,
+    { dueDate: req.body.dueDate },
+    { new: true }
+  );
+
+  if (!newPost)
+    return res.status(404).send("Invalid id.");
+    
+  res.send("Done");
+});
+
 router.put("/:id/view", [auth], async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(400).send("Invalid id.");
@@ -229,12 +245,42 @@ router.put("/:id/follow", [auth], async (req, res) => {
   }
 });
 
+router.get("/:idPost/like/:idUser", [auth], async (req, res) => {
+  const post = await Post.findById(req.params.idPost);
+  if (!post) return res.status(400).send("Invalid id.");
+
+  const idPostRef = new ObjectId(req.params.idPost);
+  const idUserRef = new ObjectId(req.params.idUser);
+  const like = await Like.findOne({
+    idPostRef: idPostRef,
+    idUserRef: idUserRef,
+  }).select("-__v");
+
+  res.send(like ? true : false);
+});
+
+router.get("/:idPost/follow/:idUser", [auth], async (req, res) => {
+  const post = await Post.findById(req.params.idPost);
+  if (!post) return res.status(400).send("Invalid id.");
+
+  const idPostRef = new ObjectId(req.params.idPost);
+  const idUserRef = new ObjectId(req.params.idUser);
+  const like = await Follow.findOne({
+    idPostRef: idPostRef,
+    idUserRef: idUserRef,
+  }).select("-__v");
+
+  res.send(like ? true : false);
+});
+
 router.get("/:idPost/comment", [auth], async (req, res) => {
   const post = await Post.findById(req.params.idPost);
   if (!post) return res.status(400).send("Invalid id.");
 
   const idPostRef = new ObjectId(req.params.idPost);
-  const cmt = await Comment.find({ idPostRef: idPostRef }).select("-__v");
+  const cmt = await Comment.find({ idPostRef: idPostRef })
+    .populate("idUserRef", "username -_id")
+    .select("-__v");
 
   res.send(cmt);
 });
@@ -245,12 +291,13 @@ router.post("/:idPost/comment", [auth], async (req, res) => {
   const { error } = validateComment(data);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const post = await Post.findById(data.idPost);
+  const post = await Post.findById(data.idPostRef);
   if (!post) return res.status(400).send("Invalid id.");
 
   const cmt = new Comment({
-    idPostRef: new ObjectId(data.idPost),
+    idPostRef: new ObjectId(data.idPostRef),
     idUserRef: new ObjectId(data.idUserRef),
+    isConfirm: false,
     content: data.content,
     dateTime: data.dateTime,
   });
@@ -274,14 +321,14 @@ router.put("/:idPost/comment/:idCmt", [auth, isAdmin], async (req, res) => {
 
   const newCmt = await Comment.findByIdAndUpdate(
     req.params.idCmt,
-    { status: req.body.status },
+    { isConfirm: true },
     { new: true }
   );
 
   if (!newCmt)
     return res.status(404).send("The post with the given ID was not found.");
 
-  res.send(newCmt);
+  res.send("Done");
 });
 
 router.get("/:idPost/report", [auth, isAdmin], async (req, res) => {

@@ -33,7 +33,9 @@ router.get("/owner/:id", [auth, isOwner], async (req, res) => {
 
   const userInfo = await UserInfo.findOne({
     idUserRef: new ObjectId(req.params.id),
-  });
+  })
+    .populate("address")
+    .select("-_id");
 
   if (!userInfo) res.status(400).send("Invalid id.");
 
@@ -127,7 +129,7 @@ router.put("/:id/status", [auth, isAdmin], async (req, res) => {
 
   const newUser = await User.findByIdAndUpdate(
     req.params.id,
-    { isConfirm: req.body.isConfirm },
+    { isConfirm: true },
     { new: true }
   );
 
@@ -160,11 +162,14 @@ router.put("/:id/change-password", [auth, isAdmin], async (req, res) => {
 router.put("/owner/:idUser/profile", [auth, isOwner], async (req, res) => {
   const data = req.body.data;
   data.idUserRef = req.params.idUser;
+
   const { error } = validateUserInfo(data);
   if (error) return res.status(400).send(error.details[0].message);
-  const userInfo = await UserInfo.find({
-    inUserRef: new ObjectId(req.params.idUser),
+
+  const userInfo = await UserInfo.findOne({
+    idUserRef: new ObjectId(req.params.idUser),
   });
+
   if (!userInfo) return res.status(400).send("Invalid id.");
 
   const newUser = await UserInfo.findByIdAndUpdate(
@@ -172,17 +177,15 @@ router.put("/owner/:idUser/profile", [auth, isOwner], async (req, res) => {
     {
       name: data.name,
       cardId: data.cardId,
-      email: data.email,
       phone: data.phone,
       address: data.address,
     },
     { new: true }
   );
 
-  if (!newUser)
-    return res.status(404).send("The report with the given ID was not found.");
+  if (!newUser) return res.status(404).send("Invalid id");
 
-  res.send(newUser);
+  res.send("Done");
 });
 
 module.exports = router;

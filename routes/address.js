@@ -7,6 +7,7 @@ const District = require("../models/address/district");
 const Ward = require("../models/address/ward");
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("../middleware/auth");
+const validateObjectId = require("../middleware/validateObjectId");
 
 router.get("/city", async (req, res) => {
   const city = await City.find({}).select("-__v");
@@ -15,6 +16,9 @@ router.get("/city", async (req, res) => {
 });
 
 router.get("/city/:id", async (req, res) => {
+  if (!validateObjectId(req.params.id))
+    return res.status(400).send("Invalid Id");
+
   const city = await City.findById(req.params.id).select("-__v");
   if (!city) {
     return res.status(400).send("The address with the given ID was not found.");
@@ -23,6 +27,9 @@ router.get("/city/:id", async (req, res) => {
 });
 
 router.get("/district", async (req, res) => {
+  if (!validateObjectId(req.query.idCityRef))
+    return res.status(400).send("Invalid Id");
+
   const idCityRef = new ObjectId(req.query.idCityRef);
   const district = await District.find({ idCityRef: idCityRef }).select("-__v");
   if (!district) {
@@ -33,6 +40,9 @@ router.get("/district", async (req, res) => {
 });
 
 router.get("/district/:id", async (req, res) => {
+  if (!validateObjectId(req.params.id))
+    return res.status(400).send("Invalid Id");
+
   const district = await District.findById(req.params.id).select("-__v");
   if (!district) {
     return res.status(400).send("The address with the given ID was not found.");
@@ -42,6 +52,9 @@ router.get("/district/:id", async (req, res) => {
 });
 
 router.get("/ward", async (req, res) => {
+  if (!validateObjectId(req.query.idDistrictRef))
+    return res.status(400).send("Invalid Id");
+
   const idDistrictRef = new ObjectId(req.query.idDistrictRef);
   const district = await Ward.find({
     idDistrictRef: idDistrictRef,
@@ -54,6 +67,9 @@ router.get("/ward", async (req, res) => {
 });
 
 router.get("/ward/:id", async (req, res) => {
+  if (!validateObjectId(req.query.req.params.id))
+    return res.status(400).send("Invalid Id");
+
   const ward = await Ward.findById(req.params.id).select("-__v");
   if (!ward) {
     return res.status(400).send("The address with the given ID was not found.");
@@ -63,6 +79,9 @@ router.get("/ward/:id", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
+  if (!validateObjectId(req.params.id))
+    return res.status(400).send("Invalid Id");
+
   const address = await Address.findById(req.params.id)
     .populate("idCityRef idDistrictRef idWardRef", "name -_id")
     .select("-__v");
